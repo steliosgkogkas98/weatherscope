@@ -106,6 +106,14 @@
   text-align: center;
 }
 
+.time-slider {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  z-index: 1040;
+  transform: translateX(-50%);
+}
+
 .my-world {
   position: absolute;
   top: 80px;
@@ -123,6 +131,10 @@
 }
 
 @media (max-width: 600px) {
+  .time-slider {
+    bottom: 60px;
+  }
+
   .brand__name,
   .my-world-btn__label {
     display: none;
