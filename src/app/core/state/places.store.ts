@@ -26,6 +26,8 @@ export class PlacesStore {
   /** Place created from the browser geolocation. */
   readonly currentLocation = signal<Place | null>(null);
   readonly unit = signal<TemperatureUnit>(readJson<TemperatureUnit>(UNIT_KEY) ?? 'celsius');
+  /** Whether the "My World" drawer is open. */
+  readonly myWorldOpen = signal(false);
   /** Hours from now shown on the map (0 = now). Driven by the time slider. */
   readonly hourOffset = signal(0);
 

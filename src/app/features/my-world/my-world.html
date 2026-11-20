@@ -1,0 +1,126 @@
+<aside class="drawer" [class.is-wide]="mode() === 'compare'" aria-labelledby="my-world-title">
+  <header class="drawer__header">
+    <h2 id="my-world-title" class="drawer__title">🌍 My World</h2>
+
+    <div class="switch" role="group" aria-label="View">
+      <button type="button" [attr.aria-pressed]="mode() === 'list'" (click)="mode.set('list')">
+        List
+      </button>
+      <button
+        type="button"
+        [attr.aria-pressed]="mode() === 'compare'"
+        [disabled]="entries().length < 2"
+        [attr.title]="entries().length < 2 ? 'Save at least 2 places to compare them' : null"
+        [attr.aria-describedby]="entries().length < 2 ? 'compare-hint' : null"
+        (click)="mode.set('compare')"
+      >
+        Compare
+      </button>
+    </div>
+
+    <button
+      type="button"
+      class="close"
+      aria-label="Close My World"
+      (click)="store.myWorldOpen.set(false)"
+    >
+      ✕
+    </button>
+  </header>
+
+  @if (status() === 'error') {
+    <p class="notice" role="alert">Couldn't refresh the weather for your places. Try again later.</p>
+  }
+
+  @if (entries().length === 0) {
+    <div class="empty">
+      <p class="empty__icon" aria-hidden="true">☆</p>
+      <p><strong>Your world is empty.</strong></p>
+      <p>
+        Explore the map, open a place and press ☆ to save it. Your saved places appear here, so you
+        can follow and compare them.
+      </p>
+    </div>
+  } @else if (mode() === 'list' || entries().length < 2) {
+    <ul class="list">
+      @for (entry of entries(); track entry.place.id) {
+        <li class="row">
+          <button type="button" class="row__main" (click)="explore(entry.place)">
+            <span class="row__flag" aria-hidden="true">{{ entry.flag }}</span>
+            <span class="row__text">
+              <span class="row__name">{{ entry.place.name }}</span>
+              <span class="row__sub">{{ subtitle(entry.place) || entry.condition?.label }}</span>
+            </span>
+            @if (entry.snapshot; as snapshot) {
+              <span class="row__icon" aria-hidden="true">{{ entry.condition?.icon }}</span>
+              <span class="row__temp" [style.background]="color(snapshot.temperature)">
+                {{ snapshot.temperature | temperature: store.unit() }}
+              </span>
+            } @else if (status() === 'loading') {
+              <span class="row__temp row__temp--loading">…</span>
+            }
+          </button>
+          @if (!entry.isCurrent) {
+            <button
+              type="button"
+              class="row__remove"
+              [attr.aria-label]="'Remove ' + entry.place.name + ' from My World'"
+              (click)="remove(entry.place)"
+            >
+              ✕
+            </button>
+          }
+        </li>
+      }
+    </ul>
+    @if (entries().length === 1) {
+      <p id="compare-hint" class="hint">
+        💡 Save one more place with ☆ to compare them side by side.
+      </p>
+    }
+  } @else {
+    @if (highlights().length) {
+      <ul class="highlights" aria-label="Highlights">
+        @for (h of highlights(); track h.label) {
+          <li>
+            <span aria-hidden="true">{{ h.icon }}</span>
+            <span class="highlights__label">{{ h.label }}</span>
+            <strong>{{ h.entry.place.name }}</strong>
+            <span>{{ h.value }}</span>
+          </li>
+        }
+      </ul>
+    }
+
+    <ul class="cards">
+      @for (entry of entries(); track entry.place.id) {
+        <li class="card">
+          <button type="button" class="card__btn" (click)="explore(entry.place)">
+            <span class="card__name">
+              <span aria-hidden="true">{{ entry.flag }}</span> {{ entry.place.name }}
+            </span>
+            @if (entry.snapshot; as snapshot) {
+              <span class="card__now">
+                <span class="card__icon" aria-hidden="true">{{ entry.condition?.icon }}</span>
+                <span class="card__temp">{{ snapshot.temperature | temperature: store.unit() }}</span>
+              </span>
+              <span class="card__label">{{ entry.condition?.label }}</span>
+              <span class="card__meta">
+                24h: {{ entry.low | temperature: store.unit() }} –
+                {{ entry.high | temperature: store.unit() }} · 💨
+                {{ snapshot.windSpeed | number: '1.0-0' }} km/h
+              </span>
+              @if (entry.sparkline; as points) {
+                <svg class="card__spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
+                  <polyline [attr.points]="points" [attr.stroke]="color(snapshot.temperature)" />
+                </svg>
+              }
+            } @else {
+              <span class="card__label">Loading…</span>
+            }
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</aside>

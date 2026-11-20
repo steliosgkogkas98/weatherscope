@@ -78,9 +78,63 @@
   width: min(390px, calc(100% - 24px));
 }
 
+.my-world-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &[aria-expanded='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.badge {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.my-world {
+  position: absolute;
+  top: 80px;
+  left: 12px;
+  max-height: calc(100% - 150px);
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+  width: min(360px, calc(100% - 24px));
+  transition: width 0.25s ease;
+
+  &.is-wide {
+    width: min(880px, calc(100% - 24px));
+  }
+}
+
 @media (max-width: 600px) {
-  .brand__name {
+  .brand__name,
+  .my-world-btn__label {
     display: none;
+  }
+
+  .my-world,
+  .my-world.is-wide {
+    top: auto;
+    right: 12px;
+    width: auto;
+    max-height: 70dvh;
+    bottom: 12px;
   }
 
   /* Bottom sheet on phones */

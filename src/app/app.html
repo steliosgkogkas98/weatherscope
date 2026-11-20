@@ -8,6 +8,20 @@
 
   <button
     type="button"
+    class="my-world-btn"
+    aria-controls="my-world"
+    [attr.aria-expanded]="store.myWorldOpen()"
+    (click)="store.myWorldOpen.set(!store.myWorldOpen())"
+  >
+    <span aria-hidden="true">★</span>
+    <span class="my-world-btn__label">My World</span>
+    @if (store.saved().length) {
+      <span class="badge">{{ store.saved().length }}</span>
+    }
+  </button>
+
+  <button
+    type="button"
     class="unit-toggle"
     (click)="store.toggleUnit()"
     [attr.aria-label]="store.unit() === 'celsius' ? 'Switch to Fahrenheit' : 'Switch to Celsius'"
@@ -19,6 +33,10 @@
 
 <main class="layout">
   <app-world-map />
+
+  @if (store.myWorldOpen()) {
+    <app-my-world id="my-world" class="my-world" />
+  }
 
   @if (store.selected(); as place) {
     <app-place-details class="details" [place]="place" />
