@@ -19,4 +19,8 @@
 
 <main class="layout">
   <app-world-map />
+
+  @if (store.selected(); as place) {
+    <app-place-details class="details" [place]="place" />
+  }
 </main>

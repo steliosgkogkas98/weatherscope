@@ -1,0 +1,96 @@
+<aside class="panel" aria-labelledby="details-title">
+  <header class="hero" [attr.data-theme]="theme()">
+    <div class="hero__top">
+      <div class="hero__place">
+        <h2 id="details-title" class="hero__name" tabindex="-1" #title>
+          <span aria-hidden="true">{{ flag() }}</span> {{ place().name }}
+        </h2>
+        @if (subtitle()) {
+          <p class="hero__sub">{{ subtitle() }}</p>
+        }
+        @if (localTime()) {
+          <p class="hero__sub">Local time: {{ localTime() }}</p>
+        }
+      </div>
+
+      <div class="hero__actions">
+        <button
+          type="button"
+          class="icon-btn"
+          [attr.aria-pressed]="isSaved()"
+          [attr.aria-label]="isSaved() ? 'Remove ' + place().name + ' from My World' : 'Save ' + place().name + ' to My World'"
+          (click)="toggleSaved()"
+        >
+          {{ isSaved() ? '★' : '☆' }}
+        </button>
+        <button type="button" class="icon-btn" aria-label="Close details" (click)="close()">✕</button>
+      </div>
+    </div>
+
+    @if (forecast(); as forecast) {
+      <div class="now">
+        <span class="now__icon" aria-hidden="true">{{ condition()?.icon }}</span>
+        <div>
+          <p class="now__temp">{{ forecast.current.temperature | temperature: store.unit() }}</p>
+          <p class="now__label">{{ condition()?.label }}</p>
+        </div>
+      </div>
+      @if (today(); as today) {
+        <p class="hero__range">
+          H {{ today.temperatureMax | temperature: store.unit() }} · L
+          {{ today.temperatureMin | temperature: store.unit() }}
+        </p>
+      }
+    }
+  </header>
+
+  <div class="body">
+    @switch (status()) {
+      @case ('loading') {
+        <div class="skeleton" aria-busy="true" aria-label="Loading forecast">
+          <span></span><span></span><span></span>
+        </div>
+      }
+      @case ('error') {
+        <div class="error" role="alert">
+          <p>We couldn't load the forecast for {{ place().name }}.</p>
+          <button type="button" class="btn" (click)="retry()">Try again</button>
+        </div>
+      }
+    }
+
+    @if (forecast(); as forecast) {
+      <dl class="facts">
+        <div>
+          <dt>Feels like</dt>
+          <dd>{{ forecast.current.apparentTemperature | temperature: store.unit() }}</dd>
+        </div>
+        <div>
+          <dt>Humidity</dt>
+          <dd>{{ forecast.current.humidity }}%</dd>
+        </div>
+        <div>
+          <dt>Wind</dt>
+          <dd>{{ wind() }}</dd>
+        </div>
+        <div>
+          <dt>Precipitation</dt>
+          <dd>{{ forecast.current.precipitation }} mm</dd>
+        </div>
+        @if (today(); as today) {
+          <div>
+            <dt>Sunrise</dt>
+            <dd>{{ time(today.sunrise) }}</dd>
+          </div>
+          <div>
+            <dt>Sunset</dt>
+            <dd>{{ time(today.sunset) }}</dd>
+          </div>
+        }
+      </dl>
+
+      <app-hourly-forecast [hours]="forecast.hourly" [unit]="store.unit()" />
+      <app-daily-forecast [days]="forecast.daily" [unit]="store.unit()" />
+    }
+  </div>
+</aside>

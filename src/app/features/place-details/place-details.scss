@@ -1,0 +1,114 @@
+:host {
+  display: block;
+  animation: slide-in 0.25s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+/* Weather-aware header colours */
+.hero {
+  --hero-bg: linear-gradient(160deg, #60a5fa, #2563eb);
+  padding: 16px 18px 18px;
+  background: var(--hero-bg);
+  color: #fff;
+
+  &[data-theme^='clear-day'] { --hero-bg: linear-gradient(160deg, #fbbf24, #f97316); }
+  &[data-theme^='cloudy-day'], &[data-theme^='fog-day'] { --hero-bg: linear-gradient(160deg, #94a3b8, #475569); }
+  &[data-theme^='rain'], &[data-theme^='drizzle'] { --hero-bg: linear-gradient(160deg, #3b82f6, #1e3a8a); }
+  &[data-theme^='snow'] { --hero-bg: linear-gradient(160deg, #a5b4fc, #4f46e5); }
+  &[data-theme^='storm'] { --hero-bg: linear-gradient(160deg, #6b21a8, #1e1b4b); }
+  &[data-theme$='night'] { --hero-bg: linear-gradient(160deg, #1e293b, #0f172a); }
+
+  &__top { display: flex; justify-content: space-between; gap: 8px; }
+  &__name { margin: 0; font-size: 1.35rem; outline-color: #fff; }
+  &__sub { margin: 2px 0 0; font-size: 0.85rem; opacity: 0.9; }
+  &__actions { display: flex; gap: 4px; }
+  &__range { margin: 4px 0 0; font-weight: 600; opacity: 0.95; }
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 20%);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+
+  &:hover { background: rgb(255 255 255 / 32%); }
+}
+
+.now {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+
+  &__icon { font-size: 3.2rem; }
+  &__temp { margin: 0; font-size: 3rem; font-weight: 800; line-height: 1; }
+  &__label { margin: 4px 0 0; font-weight: 600; }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px 18px 20px;
+  overflow-y: auto;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+
+  div { padding: 8px 10px; border-radius: 12px; background: var(--surface-muted); }
+  dt { font-size: 0.72rem; color: var(--text-muted); }
+  dd { margin: 2px 0 0; font-weight: 700; }
+}
+
+.skeleton {
+  display: grid;
+  gap: 10px;
+
+  span {
+    height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, var(--surface-muted), var(--border), var(--surface-muted));
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite linear;
+  }
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+.error p { margin: 0 0 10px; }
+
+.btn {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
