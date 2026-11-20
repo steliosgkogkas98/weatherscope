@@ -27,10 +27,7 @@ export function nearestPlace(point: Coordinates, places: Place[]): Place | undef
   return best;
 }
 
-/** "GR" → 🇬🇷 (regional indicator symbols). */
-export function countryFlag(countryCode?: string): string {
-  if (!countryCode || countryCode.length !== 2) return '🏳️';
-  return String.fromCodePoint(
-    ...[...countryCode.toUpperCase()].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65),
-  );
+/** "GR" → "fi fi-gr" (CSS classes of the `flag-icons` package, real SVG flags). */
+export function flagClass(countryCode?: string): string | null {
+  return countryCode && /^[a-z]{2}$/i.test(countryCode) ? `fi fi-${countryCode.toLowerCase()}` : null;
 }

@@ -24,6 +24,7 @@ import { weatherAt } from '../../core/utils/snapshot';
 import { temperatureColor, temperatureTextColor } from '../../core/utils/temperature-color';
 import { convertTemperature, formatTemperature } from '../../core/utils/units';
 import { describeWeather } from '../../core/utils/weather-codes';
+import { IconName, iconSvg } from '../../shared/icons/weather-icons';
 
 type PointKind = 'current' | 'selected' | 'saved' | 'city';
 
@@ -264,7 +265,7 @@ function markerIcon(html: string): L.DivIcon {
 function markerHtml(
   point: MapPoint,
   celsius: number,
-  icon: string,
+  icon: IconName,
   unit: TemperatureUnit,
   selected: boolean,
 ): string {
@@ -272,11 +273,12 @@ function markerHtml(
   const classes = ['wx-marker', `wx-marker--${point.kind}`, selected ? 'is-selected' : '']
     .filter(Boolean)
     .join(' ');
-  const badge = point.kind === 'current' ? '📍 ' : point.kind === 'saved' ? '★ ' : '';
+  const badge =
+    point.kind === 'current' ? `${iconSvg('pin', 11)} ` : point.kind === 'saved' ? '★ ' : '';
   return `
     <div class="${classes}" style="--wx-bg:${temperatureColor(celsius)};--wx-fg:${temperatureTextColor(celsius)}">
       <span class="wx-marker__chip" aria-hidden="true">
-        <span class="wx-marker__icon">${icon}</span>
+        <span class="wx-marker__icon">${iconSvg(icon, 22)}</span>
         <span class="wx-marker__temp">${temp}°</span>
       </span>
       <span class="wx-marker__name" aria-hidden="true">${badge}${escapeHtml(point.place.name)}</span>

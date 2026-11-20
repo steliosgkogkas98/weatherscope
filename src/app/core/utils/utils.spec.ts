@@ -1,6 +1,6 @@
 import { WeatherSnapshot } from '../models/weather.model';
 import { coordKey, roundCoord } from './coords';
-import { countryFlag, distanceKm, nearestPlace } from './geo';
+import { distanceKm, flagClass, nearestPlace } from './geo';
 import { weatherAt } from './snapshot';
 import { temperatureColor, temperatureTextColor } from './temperature-color';
 import { convertTemperature, formatTemperature, windDirectionLabel } from './units';
@@ -16,12 +16,12 @@ describe('coords', () => {
 
 describe('weather codes', () => {
   it('maps WMO codes to a label and icon', () => {
-    expect(describeWeather(0)).toEqual({ label: 'Clear sky', icon: '☀️', category: 'clear' });
+    expect(describeWeather(0)).toEqual({ label: 'Clear sky', icon: 'clear-day', category: 'clear' });
     expect(describeWeather(95).category).toBe('storm');
   });
 
   it('uses night icons when it is dark', () => {
-    expect(describeWeather(0, false).icon).toBe('🌙');
+    expect(describeWeather(0, false).icon).toBe('clear-night');
   });
 
   it('falls back gracefully for unknown codes', () => {
@@ -66,9 +66,9 @@ describe('geo', () => {
     expect(nearestPlace({ latitude: 40.6, longitude: 22.9 }, places)?.name).toBe('Thessaloniki');
   });
 
-  it('builds flag emojis from country codes', () => {
-    expect(countryFlag('GR')).toBe('🇬🇷');
-    expect(countryFlag(undefined)).toBe('🏳️');
+  it('builds flag-icons classes from country codes', () => {
+    expect(flagClass('GR')).toBe('fi fi-gr');
+    expect(flagClass(undefined)).toBeNull();
   });
 });
 

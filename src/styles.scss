@@ -117,8 +117,8 @@ input {
   }
 
   &__icon {
-    font-size: 1rem;
-    line-height: 1;
+    display: flex;
+    margin: -2px 0;
   }
 
   &__name {
@@ -129,6 +129,10 @@ input {
     font-size: 0.72rem;
     font-weight: 600;
     white-space: nowrap;
+
+    svg {
+      vertical-align: -1px;
+    }
   }
 
   &--current &__name,
@@ -150,4 +154,10 @@ input {
 
 .leaflet-control-attribution {
   font-size: 0.65rem;
+}
+
+/* ---------- Flags (flag-icons package) ---------- */
+.fi {
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgb(15 23 42 / 12%);
 }

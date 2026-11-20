@@ -3,7 +3,10 @@
     <div class="hero__top">
       <div class="hero__place">
         <h2 id="details-title" class="hero__name" tabindex="-1" #title>
-          <span aria-hidden="true">{{ flag() }}</span> {{ place().name }}
+          @if (flag(); as flag) {
+            <span [class]="flag" aria-hidden="true"></span>
+          }
+          {{ place().name }}
         </h2>
         @if (subtitle()) {
           <p class="hero__sub">{{ subtitle() }}</p>
@@ -29,7 +32,9 @@
 
     @if (forecast(); as forecast) {
       <div class="now">
-        <span class="now__icon" aria-hidden="true">{{ condition()?.icon }}</span>
+        @if (condition(); as condition) {
+          <app-icon class="now__icon" [name]="condition.icon" [size]="76" />
+        }
         <div>
           <p class="now__temp">{{ forecast.current.temperature | temperature: store.unit() }}</p>
           <p class="now__label">{{ condition()?.label }}</p>

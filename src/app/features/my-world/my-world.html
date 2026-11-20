@@ -1,6 +1,6 @@
 <aside class="drawer" [class.is-wide]="mode() === 'compare'" aria-labelledby="my-world-title">
   <header class="drawer__header">
-    <h2 id="my-world-title" class="drawer__title">🌍 My World</h2>
+    <h2 id="my-world-title" class="drawer__title">My World</h2>
 
     <div class="switch" role="group" aria-label="View">
       <button type="button" [attr.aria-pressed]="mode() === 'list'" (click)="mode.set('list')">
@@ -46,13 +46,21 @@
       @for (entry of entries(); track entry.place.id) {
         <li class="row">
           <button type="button" class="row__main" (click)="explore(entry.place)">
-            <span class="row__flag" aria-hidden="true">{{ entry.flag }}</span>
+            <span class="row__flag" aria-hidden="true">
+              @if (entry.isCurrent) {
+                <app-icon name="pin" [size]="20" />
+              } @else if (entry.flag) {
+                <span [class]="entry.flag"></span>
+              }
+            </span>
             <span class="row__text">
               <span class="row__name">{{ entry.place.name }}</span>
               <span class="row__sub">{{ subtitle(entry.place) || entry.condition?.label }}</span>
             </span>
             @if (entry.snapshot; as snapshot) {
-              <span class="row__icon" aria-hidden="true">{{ entry.condition?.icon }}</span>
+              @if (entry.condition; as condition) {
+                <app-icon [name]="condition.icon" [size]="30" />
+              }
               <span class="row__temp" [style.background]="color(snapshot.temperature)">
                 {{ snapshot.temperature | temperature: store.unit() }}
               </span>
@@ -75,7 +83,7 @@
     </ul>
     @if (entries().length === 1) {
       <p id="compare-hint" class="hint">
-        💡 Save one more place with ☆ to compare them side by side.
+        Save one more place with ☆ to compare them side by side.
       </p>
     }
   } @else {
@@ -83,7 +91,7 @@
       <ul class="highlights" aria-label="Highlights">
         @for (h of highlights(); track h.label) {
           <li>
-            <span aria-hidden="true">{{ h.icon }}</span>
+            <app-icon [name]="h.icon" [size]="18" />
             <span class="highlights__label">{{ h.label }}</span>
             <strong>{{ h.entry.place.name }}</strong>
             <span>{{ h.value }}</span>
@@ -97,17 +105,26 @@
         <li class="card">
           <button type="button" class="card__btn" (click)="explore(entry.place)">
             <span class="card__name">
-              <span aria-hidden="true">{{ entry.flag }}</span> {{ entry.place.name }}
+              <span aria-hidden="true">
+                @if (entry.isCurrent) {
+                <app-icon name="pin" [size]="20" />
+              } @else if (entry.flag) {
+                <span [class]="entry.flag"></span>
+              }
+              </span>
+              {{ entry.place.name }}
             </span>
             @if (entry.snapshot; as snapshot) {
               <span class="card__now">
-                <span class="card__icon" aria-hidden="true">{{ entry.condition?.icon }}</span>
+                @if (entry.condition; as condition) {
+                  <app-icon [name]="condition.icon" [size]="48" />
+                }
                 <span class="card__temp">{{ snapshot.temperature | temperature: store.unit() }}</span>
               </span>
               <span class="card__label">{{ entry.condition?.label }}</span>
               <span class="card__meta">
                 24h: {{ entry.low | temperature: store.unit() }} –
-                {{ entry.high | temperature: store.unit() }} · 💨
+                {{ entry.high | temperature: store.unit() }} · <app-icon name="wind" [size]="14" />
                 {{ snapshot.windSpeed | number: '1.0-0' }} km/h
               </span>
               @if (entry.sparkline; as points) {

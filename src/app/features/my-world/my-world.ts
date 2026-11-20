@@ -9,16 +9,19 @@ import { TemperaturePipe } from '../../core/pipes/temperature.pipe';
 import { WeatherService } from '../../core/services/weather.service';
 import { PlacesStore } from '../../core/state/places.store';
 import { coordKey } from '../../core/utils/coords';
-import { countryFlag } from '../../core/utils/geo';
+import { flagClass } from '../../core/utils/geo';
 import { temperatureColor } from '../../core/utils/temperature-color';
 import { describeWeather, WeatherCondition } from '../../core/utils/weather-codes';
+import { Icon } from '../../shared/icons/icon';
+import { IconName } from '../../shared/icons/weather-icons';
 
 type Mode = 'list' | 'compare';
 
 interface Entry {
   place: Place;
   isCurrent: boolean;
-  flag: string;
+  /** flag-icons CSS classes, e.g. "fi fi-gr". */
+  flag: string | null;
   snapshot?: WeatherSnapshot;
   condition?: WeatherCondition;
   /** Lowest / highest temperature over the next 24 hours. */
@@ -30,7 +33,7 @@ interface Entry {
 
 interface Highlight {
   label: string;
-  icon: string;
+  icon: IconName;
   entry: Entry;
   value: string;
 }
@@ -43,7 +46,7 @@ type LoadState = { status: 'loading' | 'error' | 'done'; snapshots: Map<string, 
  */
 @Component({
   selector: 'app-my-world',
-  imports: [TemperaturePipe, DecimalPipe],
+  imports: [TemperaturePipe, DecimalPipe, Icon],
   templateUrl: './my-world.html',
   styleUrl: './my-world.scss',
   host: {
@@ -86,7 +89,7 @@ export class MyWorld {
       const entry: Entry = {
         place,
         isCurrent: !!place.isCurrentLocation,
-        flag: place.isCurrentLocation ? '📍' : countryFlag(place.countryCode),
+        flag: flagClass(place.countryCode),
       };
       if (!snapshot) return entry;
 
@@ -117,11 +120,11 @@ export class MyWorld {
     const temp = (c: number) => new TemperaturePipe().transform(c, unit, true);
 
     return [
-      { label: 'Warmest', icon: '🔥', entry: warmest, value: temp(warmest.snapshot!.temperature) },
-      { label: 'Coldest', icon: '🧊', entry: coldest, value: temp(coldest.snapshot!.temperature) },
+      { label: 'Warmest', icon: 'clear-day', entry: warmest, value: temp(warmest.snapshot!.temperature) },
+      { label: 'Coldest', icon: 'snow', entry: coldest, value: temp(coldest.snapshot!.temperature) },
       {
         label: 'Windiest',
-        icon: '💨',
+        icon: 'wind',
         entry: windiest,
         value: `${Math.round(windiest.snapshot!.windSpeed)} km/h`,
       },

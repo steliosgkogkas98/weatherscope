@@ -86,11 +86,10 @@ button { cursor: pointer; }
     &:hover { background: var(--surface-muted); }
   }
 
-  &__flag { font-size: 1.3rem; }
+  &__flag { display: flex; width: 22px; justify-content: center; }
   &__text { flex: 1; display: flex; flex-direction: column; min-width: 0; }
   &__name { font-weight: 600; }
   &__sub { overflow: hidden; font-size: 0.8rem; color: var(--text-muted); text-overflow: ellipsis; white-space: nowrap; }
-  &__icon { font-size: 1.3rem; }
 
   &__temp {
     min-width: 46px;
@@ -116,7 +115,7 @@ button { cursor: pointer; }
   li {
     display: flex;
     gap: 6px;
-    align-items: baseline;
+    align-items: center;
     padding: 6px 12px;
     border-radius: 999px;
     background: var(--surface-muted);
@@ -149,12 +148,11 @@ button { cursor: pointer; }
   &:hover { border-color: var(--accent); }
 }
 
-.card__name { font-weight: 700; }
+.card__name { display: flex; align-items: center; gap: 6px; font-weight: 700; }
 .card__now { display: flex; align-items: center; gap: 8px; }
-.card__icon { font-size: 2rem; }
 .card__temp { font-size: 2rem; font-weight: 800; }
 .card__label { font-weight: 600; }
-.card__meta { font-size: 0.8rem; color: var(--text-muted); }
+.card__meta { display: flex; align-items: center; gap: 3px; font-size: 0.8rem; color: var(--text-muted); }
 
 .card__spark {
   width: 100%;

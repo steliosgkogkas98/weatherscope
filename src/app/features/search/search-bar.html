@@ -1,6 +1,6 @@
 <div class="search" (focusout)="onFocusOut($event)">
   <label class="visually-hidden" for="place-search">Search for a place</label>
-  <span class="search__icon" aria-hidden="true">🔍</span>
+  <app-icon class="search__icon" name="search" [size]="16" />
   <input
     id="place-search"
     class="search__input"
@@ -32,7 +32,11 @@
           (mouseenter)="activeIndex.set(i)"
           (click)="choose(place)"
         >
-          <span class="results__flag" aria-hidden="true">{{ flag(place.countryCode) }}</span>
+          <span class="results__flag" aria-hidden="true">
+            @if (flag(place.countryCode); as flag) {
+              <span [class]="flag"></span>
+            }
+          </span>
           <span class="results__text">
             <span class="results__name">{{ place.name }}</span>
             <span class="results__meta">{{ describe(place) }}</span>
@@ -60,7 +64,7 @@
   aria-label="Show the weather at my location"
   (click)="locate()"
 >
-  <span aria-hidden="true">{{ locating() ? '⏳' : '📍' }}</span>
+  <app-icon name="pin" [size]="18" [class.is-pulsing]="locating()" />
   <span class="locate__label">My location</span>
 </button>
 

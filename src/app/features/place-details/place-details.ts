@@ -16,9 +16,10 @@ import { Forecast } from '../../core/models/weather.model';
 import { TemperaturePipe } from '../../core/pipes/temperature.pipe';
 import { WeatherService } from '../../core/services/weather.service';
 import { PlacesStore } from '../../core/state/places.store';
-import { countryFlag } from '../../core/utils/geo';
+import { flagClass } from '../../core/utils/geo';
 import { windDirectionLabel } from '../../core/utils/units';
 import { describeWeather } from '../../core/utils/weather-codes';
+import { Icon } from '../../shared/icons/icon';
 import { DailyForecast } from './daily-forecast';
 import { HourlyForecast } from './hourly-forecast';
 
@@ -29,7 +30,7 @@ type ForecastState =
 
 @Component({
   selector: 'app-place-details',
-  imports: [TemperaturePipe, HourlyForecast, DailyForecast],
+  imports: [TemperaturePipe, HourlyForecast, DailyForecast, Icon],
   templateUrl: './place-details.html',
   styleUrl: './place-details.scss',
   host: { '(keydown.escape)': 'close()' },
@@ -64,7 +65,7 @@ export class PlaceDetails {
   });
 
   protected readonly isSaved = computed(() => this.store.savedIds().has(this.place().id));
-  protected readonly flag = computed(() => countryFlag(this.place().countryCode));
+  protected readonly flag = computed(() => flagClass(this.place().countryCode));
   protected readonly subtitle = computed(() => {
     const place = this.place();
     return [place.region, place.country].filter(Boolean).join(', ');

@@ -16,7 +16,8 @@ import { Place } from '../../core/models/location.model';
 import { GeocodingService, MIN_QUERY_LENGTH } from '../../core/services/geocoding.service';
 import { GeolocationService } from '../../core/services/geolocation.service';
 import { PlacesStore } from '../../core/state/places.store';
-import { countryFlag, distanceKm, nearestPlace } from '../../core/utils/geo';
+import { distanceKm, flagClass, nearestPlace } from '../../core/utils/geo';
+import { Icon } from '../../shared/icons/icon';
 
 type SearchStatus = 'idle' | 'loading' | 'done' | 'error';
 
@@ -33,6 +34,7 @@ const IDLE: SearchState = { status: 'idle', results: [] };
  */
 @Component({
   selector: 'app-search-bar',
+  imports: [Icon],
   templateUrl: './search-bar.html',
   styleUrl: './search-bar.scss',
 })
@@ -71,7 +73,7 @@ export class SearchBar {
   protected readonly showList = computed(
     () => this.open() && this.query().trim().length >= MIN_QUERY_LENGTH,
   );
-  protected readonly flag = countryFlag;
+  protected readonly flag = flagClass;
 
   constructor() {
     this.autoLocateIfAllowed();

@@ -62,9 +62,11 @@ Every push to `main` runs the tests and deploys to **GitHub Pages** through GitH
 | **RxJS** only where it shines | Debouncing, cancelling stale requests (`switchMap`) and batching HTTP. Bridged to signals with `toSignal` and `toObservable`. |
 | **Leaflet** | Lightweight, open-source, no API key. Tiles from **OpenStreetMap**. |
 | **No UI library** | Hand-written SCSS with design tokens (CSS custom properties), to keep the bundle small and the design my own. |
+| **Custom SVG weather icons** | A small hand-made SVG icon set (`shared/icons`) mapped from the WMO weather codes, instead of emojis or an icon font. Rendered the same on every OS, and usable inside the Leaflet marker HTML too. |
+| **[flag-icons](https://github.com/lipis/flag-icons)** | Real SVG country flags via CSS classes (`fi fi-gr`). Emoji flags don't render on Windows. |
 | **Vitest** | Angular 22's default test runner. |
 
-**Runtime dependencies:** `@angular/*`, `rxjs`, `leaflet`. That's all.
+**Runtime dependencies:** `@angular/*`, `rxjs`, `leaflet`, `flag-icons`. That's all.
 
 ### Being careful with the API (free-tier limits)
 Open-Meteo's free tier allows about 10,000 calls a day, 5,000 an hour and 600 a minute, so request volume was treated as a design constraint:
@@ -82,7 +84,7 @@ A few minutes of exploring usually costs only a handful of API calls (check the 
 
 ### Accessibility
 - Search is a **WAI-ARIA 1.2 combobox** (arrow keys, Enter, Escape, `aria-activedescendant`).
-- Map markers are keyboard-focusable buttons with descriptive labels (e.g. *"London: 8°C, Overcast"*). The map pans with the arrow keys.
+- Map markers are keyboard-focusable buttons with descriptive labels (e.g. *"London: 8°C, Overcast"*). **Tab** moves between markers; when the map is focused, **arrow keys** pan and **+ / −** zoom.
 - Focus moves to the details panel when it opens. **Escape** closes panels.
 - Live regions announce search results and loading states. The time slider uses `aria-valuetext`.
 - Visible focus styles, `prefers-reduced-motion` support, and text colour on markers picked for contrast.
@@ -122,7 +124,8 @@ All requirements of the brief are implemented. Known limitations:
 
 ## 4. Next steps
 
-- **Click anywhere on the map** to get the weather for that exact point (Windy-style).
+- **Click anywhere on the map** to get the weather for that exact point (Windy-style), which also fills empty areas when zoomed in.
+- **Base map switcher:** street / satellite / dark map styles with Leaflet's layer control.
 - **Shareable URLs:** store map position, selected place and time in the query string.
 - **Weather layers** (temperature / wind / rain / clouds), like Ventusky: switch what the markers show, or draw a colour overlay.
 - **Animated wind or radar** overlay.
