@@ -1,0 +1,76 @@
+<div class="search" (focusout)="onFocusOut($event)">
+  <label class="visually-hidden" for="place-search">Search for a place</label>
+  <span class="search__icon" aria-hidden="true">🔍</span>
+  <input
+    id="place-search"
+    class="search__input"
+    type="search"
+    role="combobox"
+    autocomplete="off"
+    spellcheck="false"
+    placeholder="Search any city or town…"
+    aria-autocomplete="list"
+    aria-controls="place-search-results"
+    [attr.aria-expanded]="showList()"
+    [attr.aria-activedescendant]="activeIndex() >= 0 ? 'place-option-' + activeIndex() : null"
+    [value]="query()"
+    (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
+    (focus)="open.set(true)"
+  />
+
+  @if (showList()) {
+    <ul id="place-search-results" class="results" role="listbox" aria-label="Places">
+      @for (place of results(); track place.id; let i = $index) {
+        <li
+          role="option"
+          class="results__option"
+          [id]="'place-option-' + i"
+          [class.is-active]="i === activeIndex()"
+          [attr.aria-selected]="i === activeIndex()"
+          (mousedown)="$event.preventDefault()"
+          (mouseenter)="activeIndex.set(i)"
+          (click)="choose(place)"
+        >
+          <span class="results__flag" aria-hidden="true">{{ flag(place.countryCode) }}</span>
+          <span class="results__text">
+            <span class="results__name">{{ place.name }}</span>
+            <span class="results__meta">{{ describe(place) }}</span>
+          </span>
+        </li>
+      } @empty {
+        <li class="results__info" role="presentation">
+          @switch (state().status) {
+            @case ('loading') { Searching… }
+            @case ('error') { Search is unavailable right now. Please try again. }
+            @case ('done') { No places found for “{{ query().trim() }}”. }
+            @default { Keep typing… }
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+<button
+  type="button"
+  class="locate"
+  [disabled]="locating()"
+  [attr.aria-busy]="locating()"
+  aria-label="Show the weather at my location"
+  (click)="locate()"
+>
+  <span aria-hidden="true">{{ locating() ? '⏳' : '📍' }}</span>
+  <span class="locate__label">My location</span>
+</button>
+
+@if (locationError(); as message) {
+  <div class="toast" role="alert">
+    <span>{{ message }}</span>
+    <button type="button" class="toast__close" aria-label="Dismiss" (click)="locationError.set(null)">
+      ✕
+    </button>
+  </div>
+}
+
+<p class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</p>
