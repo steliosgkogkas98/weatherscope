@@ -6,8 +6,16 @@ import {
   RawSnapshotResponse,
 } from './open-meteo.types';
 
-/** Pure functions: API shape → app model. Kept separate so they are easy to unit test. */
+/*
+ * Pure functions that convert raw Open-Meteo responses (snake_case, parallel arrays)
+ * into the app's own models (camelCase, one object per hour/day).
+ * Components never see the raw API shape, so an API change only affects this file.
+ */
 
+/**
+ * Raw forecast response → {@link Forecast}.
+ * @example raw.hourly.temperature_2m[3] → forecast.hourly[3].temperature
+ */
 export function mapForecast(raw: RawForecastResponse): Forecast {
   const { current, hourly, daily } = raw;
   return {
@@ -46,6 +54,7 @@ export function mapForecast(raw: RawForecastResponse): Forecast {
   };
 }
 
+/** Raw multi-location response item → {@link WeatherSnapshot} (current + 24 hourly values). */
 export function mapSnapshot(raw: RawSnapshotResponse): WeatherSnapshot {
   return {
     temperature: raw.current.temperature_2m,
@@ -61,6 +70,7 @@ export function mapSnapshot(raw: RawSnapshotResponse): WeatherSnapshot {
   };
 }
 
+/** Raw geocoding result → {@link Place}. The numeric API id becomes a string id. */
 export function mapGeocodingResult(raw: RawGeocodingResult): Place {
   return {
     id: String(raw.id),

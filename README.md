@@ -126,6 +126,10 @@ All requirements of the brief are implemented. Known limitations:
 
 - **Click anywhere on the map** to get the weather for that exact point (Windy-style), which also fills empty areas when zoomed in.
 - **Base map switcher:** street / satellite / dark map styles with Leaflet's layer control.
+- **Agricultural insights:** Open-Meteo also provides soil temperature and moisture, evapotranspiration and UV index. These could be shown per place for farm planning.
+- **Weather alerts:** highlight extreme conditions (frost, heat, storms) for saved places, e.g. *"Frost risk tonight in Larissa"*.
+- **Historical comparison:** today vs. the same day in past years, using Open-Meteo's Historical Weather API.
+- **Air quality:** PM2.5, PM10 and pollen using Open-Meteo's Air Quality API.
 - **Shareable URLs:** store map position, selected place and time in the query string.
 - **Weather layers** (temperature / wind / rain / clouds), like Ventusky: switch what the markers show, or draw a colour overlay.
 - **Animated wind or radar** overlay.

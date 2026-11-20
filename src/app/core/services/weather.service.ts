@@ -17,12 +17,30 @@ const CACHE_TTL_MS = 15 * 60 * 1000;
 /** Max locations per batched request, keeps the URL a reasonable length. */
 const BATCH_SIZE = 50;
 
+/**
+ * Loads weather data from the Open-Meteo Forecast API.
+ *
+ * - {@link WeatherService.getForecast} → full forecast for ONE place (details panel).
+ * - {@link WeatherService.getSnapshots} → light data for MANY places in one request (map markers, My World).
+ *
+ * Every response is cached for 15 minutes (see {@link CacheService}).
+ */
 @Injectable({ providedIn: 'root' })
 export class WeatherService {
   private readonly http = inject(HttpClient);
   private readonly cache = inject(CacheService);
 
-  /** Full forecast for one place (details panel): current + next 24h + 7 days. */
+  /**
+   * Full forecast for one place: current conditions, the next 24 hours and 7 days.
+   * Returns the cached forecast immediately when available (no request).
+   *
+   * @param point Coordinates of the place.
+   * @returns Observable that emits the {@link Forecast} once.
+   *
+   * @example
+   * weather.getForecast({ latitude: 40.64, longitude: 22.94 })
+   *   .subscribe((f) => console.log(f.current.temperature)); // 14.2
+   */
   getForecast(point: Coordinates): Observable<Forecast> {
     const key = `forecast:${coordKey(point)}`;
     const cached = this.cache.get<Forecast>(key);
@@ -52,10 +70,17 @@ export class WeatherService {
   }
 
   /**
-   * Lightweight weather for many points at once (map markers).
-   * Only points missing from the cache are requested, all in ONE batched call
-   * (Open-Meteo accepts comma-separated coordinate lists).
-   * Returns a Map keyed by `coordKey(point)`.
+   * Lightweight weather (current + next 24 hours) for many points at once.
+   *
+   * 1. Points already in the cache are returned from it.
+   * 2. Only the missing points are requested, all in ONE batched call
+   *    (Open-Meteo accepts comma-separated coordinate lists), split into chunks of 50.
+   *
+   * @param points Places to load, in any order. Duplicates are fine.
+   * @returns Observable of a `Map` keyed by {@link coordKey}, e.g. `"40.64,22.94"`.
+   *
+   * @example
+   * weather.getSnapshots([athens, oslo]).subscribe((map) => map.get('59.91,10.75')?.temperature);
    */
   getSnapshots(points: Coordinates[]): Observable<Map<string, WeatherSnapshot>> {
     const result = new Map<string, WeatherSnapshot>();
@@ -89,6 +114,11 @@ export class WeatherService {
     );
   }
 
+  /**
+   * Requests one batch of points and caches each result.
+   * @param batch Pairs of `[cacheKey, coordinates]`.
+   * @returns The `[cacheKey, snapshot]` pairs in the same order as requested.
+   */
   private fetchSnapshotBatch(
     batch: [string, Coordinates][],
   ): Observable<[string, WeatherSnapshot][]> {
@@ -120,6 +150,10 @@ export class WeatherService {
   }
 }
 
+/**
+ * Splits an array into smaller arrays.
+ * @example chunk([1, 2, 3, 4, 5], 2) // → [[1, 2], [3, 4], [5]]
+ */
 function chunk<T>(items: T[], size: number): T[][] {
   const chunks: T[][] = [];
   for (let i = 0; i < items.length; i += size) {

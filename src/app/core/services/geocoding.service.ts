@@ -15,11 +15,22 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 /** The API needs at least 2 characters (3+ enables fuzzy matching). */
 export const MIN_QUERY_LENGTH = 2;
 
+/** Finds places by name with the Open-Meteo Geocoding API. Results are cached for 24 hours. */
 @Injectable({ providedIn: 'root' })
 export class GeocodingService {
   private readonly http = inject(HttpClient);
   private readonly cache = inject(CacheService);
 
+  /**
+   * Searches cities, towns and villages by name.
+   *
+   * @param query Text typed by the user. Fewer than {@link MIN_QUERY_LENGTH} characters returns `[]` without a request.
+   * @param count Maximum number of results (default 8).
+   * @returns Observable of matching places, most relevant first.
+   *
+   * @example
+   * geocoding.search('Bergen').subscribe((places) => places[0].country); // "Norway"
+   */
   search(query: string, count = 8): Observable<Place[]> {
     const term = query.trim();
     if (term.length < MIN_QUERY_LENGTH) {

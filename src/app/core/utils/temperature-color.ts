@@ -13,6 +13,10 @@ const STOPS: [number, [number, number, number]][] = [
   [45, [127, 29, 29]],
 ];
 
+/**
+ * Background colour for a temperature.
+ * @example temperatureColor(30) // → "rgb(239, 89, 22)" (orange-red)
+ */
 export function temperatureColor(celsius: number): string {
   const [r, g, b] = interpolate(celsius);
   return `rgb(${r}, ${g}, ${b})`;
@@ -25,6 +29,7 @@ export function temperatureTextColor(celsius: number): string {
   return luminance > 0.6 ? '#0f172a' : '#ffffff';
 }
 
+/** Linear interpolation between the two colour stops around the temperature. */
 function interpolate(celsius: number): [number, number, number] {
   if (celsius <= STOPS[0][0]) return STOPS[0][1];
   const last = STOPS[STOPS.length - 1];

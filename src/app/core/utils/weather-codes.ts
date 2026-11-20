@@ -52,6 +52,13 @@ const CODES: Record<number, CodeInfo> = {
 
 const UNKNOWN: CodeInfo = { label: 'Unknown', day: 'cloudy', category: 'cloudy' };
 
+/**
+ * Turns an Open-Meteo `weather_code` into a readable label, an icon name and a category.
+ *
+ * @param code WMO weather code (0–99).
+ * @param isDay `false` to get night icons (moon instead of sun).
+ * @example describeWeather(0, false) // → { label: 'Clear sky', icon: 'clear-night', category: 'clear' }
+ */
 export function describeWeather(code: number, isDay = true): WeatherCondition {
   const info = CODES[code] ?? UNKNOWN;
   return {
